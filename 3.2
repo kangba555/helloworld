@@ -1,0 +1,93 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define STRACK_INI_SIZE 50
+#define ADD_SIZE 10
+typedef struct Stack
+{
+    char *top;
+    char *base;
+    int StackLen;
+}Sq;
+struct Stack IniStrack(Sq &S)/*构造一空栈*/
+{
+    S.base=(char *)malloc(STRACK_INI_SIZE*sizeof(struct Stack));
+    if(!S.base)
+    {
+        exit(-1);
+    }
+    S.top=S.base;
+    S.StackLen=STRACK_INI_SIZE;
+    return S;
+};
+char CheckTop(Sq &S)/*返回顶元素*/
+{
+    if(S.top!=S.base)
+    {
+        return *(S.top-1);
+    }
+    else
+    {
+        return -1;
+    }
+};
+struct Stack Pop(Stack &S)/*删元素*/
+{
+    if(S.top!=S.base)
+    {
+        S.top--;
+        *S.top='\0';
+        return S;
+    }
+    else
+    {
+        return S;
+    }
+};
+struct Stack Push(Stack &S,char ch)/*插入元素*/
+{
+    if(S.top-S.base>=S.StackLen)
+    {
+        S.base=(char *)realloc(S.base,(STRACK_INI_SIZE+ADD_SIZE)*sizeof(Stack ));
+        S.top=S.base+STRACK_INI_SIZE;
+    }
+    *S.top=ch;
+    S.top++;
+    return S;
+};
+
+int Palindjudge(Sq &S)/*比较*/
+{
+    char temp[STRACK_INI_SIZE];
+    scanf("%s",temp);
+    int len=strlen(temp);
+    for(int i=0;i<len/2;i++)
+    {
+        S=Push(S,*(temp+i));
+    }
+    if(len%2!=0)
+    {
+        len++;
+    }
+    for(int i=len/2;i<len;i++)
+    {
+       if(CheckTop(S)==*(temp+i))
+       {
+           S=Pop(S);
+       }
+       else
+       {
+           break;
+       }
+    }
+    return  (S.base==S.top)?1:0;
+}
+/*函数顺序有先后*/
+int main()
+{
+    Sq List;
+    List=IniStrack(List);
+    printf("%d",Palindjudge(List));
+    return 0;
+}
